@@ -34,6 +34,7 @@ router.post('/new', async (req, res) => {
    payload.updatedAt = new Date();
    payload.stars = 0;
    payload.authorId = ADMIN_ID;
+   payload.deleted = false;
    payload.body = new Binary(Buffer.from(req.body.body));
 
    if (req.body.public === '1') {
