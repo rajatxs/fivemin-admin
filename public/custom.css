@@ -1,0 +1,8 @@
+#post-cover-image-thumb {
+   width: auto;
+   height: 200px;
+}
+
+.CodeMirror {
+   height: inherit !important;
+}

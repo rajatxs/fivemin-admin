@@ -1,0 +1,26 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title><%= title %></title>
+<link rel="shortcut icon" type="image/x-icon" href="https://www.fivemin.in/favicon.ico" />
+<link rel="icon" type="image/png" href="https://www.fivemin.in/favicon-16x16.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="https://www.fivemin.in/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="https://www.fivemin.in/favicon-48x48.png" sizes="48x48" />
+<link rel="icon" type="image/png" href="https://www.fivemin.in/favicon-64x64.png" sizes="64x64" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+<link 
+   rel="stylesheet" 
+   href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
+   integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+   crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+<link rel="stylesheet" href="/custom.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/markdown/markdown.min.js"></script>
+<script>
+   function $postCoverImageURL(imagePath) {
+      return `https://res.cloudinary.com/<%= $CLOUDINARY_CLOUD_NAME %>/image/upload/c_scale,h_600/${imagePath}.webp`
+   }
+</script>
+<script src="/post-util.js"></script>

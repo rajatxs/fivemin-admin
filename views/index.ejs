@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <%- include('partials/head.ejs', { title: "Fivemin Admin" }) %>
+      <script>
+         function deletePost(postId) {
+            const allow = confirm('Please confirm deletion');
+
+            if (!allow) {
+               return;
+            }
+
+            window.location.href = `?delete=${postId}`;
+         }
+      </script>
+   </head>
+   <body>
+      <%- include('partials/navbar.ejs') %>
+
+      <div class="container pt-5">
+         <h1>Posts</h1>
+         <div class="d-flex justify-content-end">
+            <a type="button" href="/post/new" class="btn btn-primary mr-2"><i class="bi bi-plus-circle"></i>&nbsp;<span>New Post</span></a>
+
+            <div class="dropdown mr-2">
+               <button
+                  class="btn btn-secondary dropdown-toggle"
+                  role="button"
+                  id="postScopeDrowndown"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+                  Scope
+            </button>
+
+               <div class="dropdown-menu" aria-labelledby="postScopeDrowndown">
+                  <% if (scopeName === 'public') { %>
+                     <a class="dropdown-item active" href="?scope=public">Public</a>
+                  <% } else { %>
+                     <a class="dropdown-item" href="?scope=public">Public</a>
+                  <% } %>
+
+                  <% if (scopeName === 'private') { %>
+                     <a class="dropdown-item active" href="?scope=private">Private</a>
+                  <% } else { %>
+                     <a class="dropdown-item" href="?scope=private">Private</a>
+                  <% } %>
+
+                  <% if (scopeName === 'deleted') { %>
+                     <a class="dropdown-item active" href="?scope=deleted">Deleted</a>
+                  <% } else { %>
+                     <a class="dropdown-item" href="?scope=deleted">Deleted</a>
+                  <% } %>
+               </div>
+            </div>
+
+            <div class="dropdown">
+               <button
+                  class="btn btn-secondary dropdown-toggle"
+                  role="button"
+                  id="postSortDropdown"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+                  Sort by
+            </button>
+
+               <div class="dropdown-menu" aria-labelledby="postSortDropdown">
+                  <% if (sortProperty === 'title') { %>
+                  <a class="dropdown-item active" href="?sort=title&order=asc">Title</a>
+                  <% } else { %>
+                  <a class="dropdown-item" href="?sort=title&order=asc">Title</a>
+                  <% } %> 
+                  
+                  <% if (sortProperty === 'topic') { %>
+                  <a class="dropdown-item active" href="?sort=topic&order=asc">Topic</a>
+                  <% } else { %>
+                  <a class="dropdown-item" href="?sort=topic&order=asc">Topic</a>
+                  <% } %> 
+                  
+                  <% if (sortProperty === 'createdAt' && sortOrder === 'desc') { %>
+                  <a class="dropdown-item active" href="?sort=createdAt&order=desc">Newest</a>
+                  <% } else { %>
+                  <a class="dropdown-item" href="?sort=createdAt&order=desc">Newest</a>
+                  <% } %> 
+                  
+                  <% if (sortProperty === 'createdAt' && sortOrder ==='asc') { %>
+                  <a class="dropdown-item active" href="?sort=createdAt&order=asc">Oldest</a>
+                  <% } else { %>
+                  <a class="dropdown-item" href="?sort=createdAt&order=asc">Oldest</a>
+                  <% } %>
+                  
+                  <% if (sortProperty === 'updatedAt' && sortOrder ==='desc') { %>
+                  <a class="dropdown-item active" href="?sort=updatedAt&order=desc">Recently updated</a>
+                  <% } else { %>
+                  <a class="dropdown-item" href="?sort=updatedAt&order=desc">Recently updated</a>
+                  <% } %>
+               </div>
+            </div>
+         </div>
+         <br />
+
+         <% if (posts.length === 0) { %>
+            <div class="d-flex justify-content-center pt-3 pb-3">
+               <p>No Posts</p>
+            </div>
+         <% } %>
+
+         <% for (const _postChunk of posts) { %> 
+         <div class="row mb-4">
+            <% for (const _post of _postChunk) { %>
+               <div class="col-4">
+                  <div class="card" style="min-height: 445px;">
+                     <img
+                        src="<%= _post.coverImageUrl %>"
+                        width="auto"
+                        height="200"
+                        class="card-img-top"
+                        alt="<%= _post.title %>"
+                     />
+                     <div class="card-body">
+                        <h5 class="card-title"><%= _post.title %></h5>
+                        <p>
+                           <small><%= _post.public?'Public': 'Private' %>&nbsp;•&nbsp;<%= _post.topicName %>&nbsp;•&nbsp;<span class="text-muted"><%= _post.updatedTime %></span></small>
+                        </p>
+                        <p class="card-text"><%= _post.desc %></p>
+
+                        <% if (scopeName === 'deleted') { %>
+                           <a
+                              href="?restore=<%= _post._id %>"
+                              class="btn btn-light mr-1">
+                              <i class="bi bi-arrow-clockwise"></i>&nbsp;<span>Restore</span>
+                           </a>
+                        <% } else { %>
+                           <a
+                              href="/post/update/<%= _post._id %>"
+                              class="btn btn-primary mr-1">
+                              <i class="bi bi-pen"></i>&nbsp;<span>Edit</span>
+                           </a>
+                           <button
+                              class="btn btn-light"
+                              onclick="deletePost('<%= _post._id %>');">
+                              <i class="bi bi-trash"></i>&nbsp;<span>Delete</span>
+                           </button>
+                        <% } %>
+                     </div>
+                  </div>
+               </div>
+            <% } %> 
+         </div>
+         <% } %>
+      </div>
+   </body>
+   <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous">
+   </script>
+   <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous">
+   </script>
+   <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous">
+   </script>
+</html>
