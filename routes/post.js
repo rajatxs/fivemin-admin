@@ -127,8 +127,7 @@ router.post('/upload/cover-image', multer.single('file'), async (req, res) => {
    }
 
    const hash = SHA1(req.file.buffer);
-   const filename = `${hash}${extname(req.file.originalname)}`;
-   const publicId = `fivemin-prod/post-cover-images/${filename}`;
+   const publicId = `fivemin-prod/post-cover-images/${hash}`;
 
    try {
       const result = await uploadFile(req.file.buffer, 'image', publicId);
