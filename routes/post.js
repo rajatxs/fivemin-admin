@@ -2,10 +2,11 @@ import { Router } from 'express';
 import { ObjectId, Binary } from 'mongodb';
 import { postCollection } from '../services/db.js';
 import multer from '../utils/multer.js';
-import { extname } from 'path';
 import { ADMIN_ID } from '../config.js';
-import { SHA1, templateData, getTopicArray } from '../utils/common.js';
+import { getPostCoverImageURL, SHA1, templateData, getTopicArray } from '../utils/common.js';
 import { uploadFile } from '../utils/cloudinary.js';
+import { postIndex } from '../utils/algolia.js';
+import topics from '../data/topics.js';
 
 const router = Router();
 
@@ -44,7 +45,25 @@ router.post('/new', async (req, res) => {
    }
 
    try {
-      await postCollection().insertOne(payload);
+      const result = await postCollection().insertOne(payload);
+
+      if (payload.public) {
+         const _topic = topics[payload.topic];
+
+         const searchRecord = {
+            objectID: result.insertedId.toHexString(),
+            name: payload.title,
+            url: `https://fivemin.in/${payload.slug}`,
+            description: payload.desc,
+            tags: payload.tags,
+            topic: _topic.name,
+            image: getPostCoverImageURL(payload.coverImagePath),
+            createdAt: payload.createdAt,
+            updatedAt: payload.updatedAt,
+         };
+
+         await postIndex.saveObject(searchRecord).wait();
+      }
 
       errorFlag = false;
       errorMessage = 'Post successfully created';
@@ -78,6 +97,7 @@ router.get('/update/:postId', async (req, res) => {
 
 router.post('/update/:postId', async (req, res) => {
    const postId = req.params.postId;
+   const _id = ObjectId.createFromHexString(postId);
    let payload = {};
    let errorFlag = false,
       errorMessage = '';
@@ -99,10 +119,31 @@ router.post('/update/:postId', async (req, res) => {
    }
 
    try {
-      await postCollection().updateOne(
-         { _id: ObjectId.createFromHexString(postId) },
-         { $set: payload }
-      );
+      await postCollection().updateOne({ _id }, { $set: payload });
+
+      if (payload.public) {
+         const _doc = await postCollection().findOne({ _id }, { projection: { body: false } });
+         
+         if (_doc) {
+            const _topic = topics[_doc.topic];
+            const searchRecord = {
+               objectID: postId,
+               name: _doc.title,
+               url: `https://fivemin.in/${_doc.slug}`,
+               description: _doc.desc,
+               tags: _doc.tags,
+               topic: _topic.name,
+               image: getPostCoverImageURL(_doc.coverImagePath),
+               createdAt: _doc.createdAt,
+               updatedAt: _doc.updatedAt,
+            };
+      
+            await postIndex.saveObject(searchRecord).wait();
+         }
+
+      } else {
+         await postIndex.deleteObject(postId).wait();
+      }
 
       errorFlag = false;
       errorMessage = 'Page successfully saved';

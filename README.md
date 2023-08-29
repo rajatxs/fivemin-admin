@@ -36,6 +36,8 @@ npm install
 | ```FM_ADMIN_DB_NAME``` | [MongoDB Database Name](https://www.mongodb.com) | Yes | - |
 | ```FM_ADMIN_CLD_NAME``` | [Cloudinary Public ID](https://cloudinary.com) | Yes | - |
 | ```CLOUDINARY_URL``` | [Cloudinary URL](https://cloudinary.com) | Yes | - |
+| ```FM_ALGOLIA_APP_ID``` | [Algolia App ID](https://algolia.com) | Yes | - |
+| ```FM_ALGOLIA_API_KEY``` | [Algolia API Key](https://algolia.com) | Yes | - |
 
 ## Usage
 

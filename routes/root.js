@@ -4,6 +4,7 @@ import { postCollection } from '../services/db.js';
 import { truncateText, getPostCoverImageURL, formatTime, templateData } from '../utils/common.js';
 import postRoutes from './post.js';
 import topics from '../data/topics.js';
+import { postIndex } from '../utils/algolia.js';
 import _ from 'lodash';
 
 const router = Router();
@@ -23,15 +24,33 @@ router.get('/', async (req, res) => {
    if (deletePostId.length > 0) {
       await postCollection().updateOne(
          { _id: ObjectId.createFromHexString(deletePostId) }, 
-         {$set: { deleted: true }},
-      );
+         {$set: { deleted: true }
+      });
+      await postIndex.deleteObject(deletePostId).wait();
    }
 
    if (restorePostId.length > 0) {
-      await postCollection().updateOne(
-         { _id: ObjectId.createFromHexString(restorePostId) }, 
-         {$set: { deleted: false }},
-      );
+      const _id = ObjectId.createFromHexString(restorePostId);
+
+      await postCollection().updateOne({ _id }, {$set: { deleted: false }});
+      const _doc = await postCollection().findOne({ _id }, { projection: { body: false }});
+
+      if (_doc) {
+         const _topic = topics[_doc.topic];
+         const searchRecord = {
+            objectID: restorePostId,
+            name: _doc.title,
+            url: `https://fivemin.in/${_doc.slug}`,
+            description: _doc.desc,
+            tags: _doc.tags,
+            topic: _topic.name,
+            image: getPostCoverImageURL(_doc.coverImagePath),
+            createdAt: _doc.createdAt,
+            updatedAt: _doc.updatedAt,
+         };
+   
+         await postIndex.saveObject(searchRecord).wait();
+      }
    }
 
    switch (scopeName) {
