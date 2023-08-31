@@ -30,7 +30,7 @@ npm install
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
-| ```FM_ADMIN_ENV``` | Server environment | No | Development |
+| ```FM_ADMIN_ENV``` | Server environment | No | development |
 | ```FM_ADMIN_PORT``` | Server Port | Yes | - |
 | ```FM_ADMIN_ID``` | Admin account Id | Yes | - |
 | ```FM_ADMIN_DB_URL``` | [MongoDB Connection URL](https://www.mongodb.com) | Yes | - |
