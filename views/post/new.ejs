@@ -78,8 +78,8 @@
             
                         <div class="form-row">
                            <div class="form-group col-md-12">
-                              <label for="tagsInput">Tags (Comma separated values)</label>
-                              <textarea class="form-control" name="tags" id="tagsInput" placeholder="" rows="2" onchange="parseInputTags(event);"></textarea>
+                              <label for="tagsInput">Tags* (Comma separated values)</label>
+                              <textarea class="form-control" name="tags" id="tagsInput" placeholder="" rows="2" onchange="parseInputTags(event);" required></textarea>
                            </div>
                         </div>
             
@@ -106,7 +106,29 @@
                                     accept=".jpg,.jpeg,.webp"
                                     onchange="onCoverImageUpload(event)" />
                               </div>
-            
+
+                              <div class="form-group w-100">
+                                 <label for="coverImageRefNameInput">Cover Image Reference Name*</label>
+                                 <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    name="coverImageRefName" 
+                                    id="coverImageRefNameInput" 
+                                    value="Fivemin"
+                                    required />
+                              </div>
+
+                              <div class="form-group w-100">
+                                 <label for="coverImageRefUrlInput">Cover Image Reference URL*</label>
+                                 <input 
+                                    type="url" 
+                                    class="form-control" 
+                                    name="coverImageRefUrl" 
+                                    id="coverImageRefUrlInput" 
+                                    value="https://fivemin.in"
+                                    required />
+                              </div>
+
                               <div class="form-group w-100">
                                  <label for="coverImageId">Cover Image Id</label>
                                  <input 

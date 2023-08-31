@@ -4,7 +4,7 @@
       <%- include('../partials/head.ejs', { title: "Update Post - Fivemin Admin" }) %>
       <script>
          window.onload = () => {
-            document.getElementById('post-cover-image-thumb').src = $postCoverImageURL("<%= post.coverImagePath %>");
+            document.getElementById('post-cover-image-thumb').src = $postCoverImageURL("<%= post.coverImage.path %>");
          }
       </script>
    </head>
@@ -116,6 +116,28 @@
                                     accept=".jpg,.jpeg,.webp"
                                     onchange="onCoverImageUpload(event)" />
                               </div>
+
+                              <div class="form-group w-100">
+                                 <label for="coverImageRefNameInput">Cover Image Reference Name*</label>
+                                 <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    name="coverImageRefName" 
+                                    id="coverImageRefNameInput" 
+                                    value="<%= post.coverImage.refName %>"
+                                    required />
+                              </div>
+                              
+                              <div class="form-group w-100">
+                                 <label for="coverImageRefUrlInput">Cover Image Reference URL*</label>
+                                 <input 
+                                    type="url" 
+                                    class="form-control" 
+                                    name="coverImageRefUrl" 
+                                    id="coverImageRefUrlInput" 
+                                    value="<%= post.coverImage.refUrl %>"
+                                    required />
+                              </div>
             
                               <div class="form-group w-100">
                                  <label for="coverImageId">Cover Image Id</label>
@@ -125,7 +147,7 @@
                                     name="coverImageId" 
                                     id="coverImageId" 
                                     placeholder="" 
-                                    value="<%= post.coverImageId %>" 
+                                    value="<%= post.coverImage.id %>" 
                                     readonly />
                               </div>
             
@@ -137,7 +159,7 @@
                                     name="coverImagePath" 
                                     id="coverImagePathInput" 
                                     placeholder="" 
-                                    value="<%= post.coverImagePath %>" 
+                                    value="<%= post.coverImage.path %>" 
                                     readonly />
                               </div>
                            </div>

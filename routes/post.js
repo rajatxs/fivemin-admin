@@ -37,6 +37,12 @@ router.post('/new', async (req, res) => {
    payload.authorId = ADMIN_ID;
    payload.deleted = false;
    payload.body = new Binary(Buffer.from(req.body.body));
+   payload.coverImage = {
+      id: req.body.coverImageId,
+      path: req.body.coverImagePath,
+      refName: req.body.coverImageRefName,
+      refUrl: req.body.coverImageRefUrl,
+   };
 
    if (req.body.public === '1') {
       payload.public = true;
@@ -57,7 +63,7 @@ router.post('/new', async (req, res) => {
             description: payload.desc,
             tags: payload.tags,
             topic: _topic.name,
-            image: getPostCoverImageURL(payload.coverImagePath),
+            image: getPostCoverImageURL(payload.coverImage.path),
             createdAt: payload.createdAt,
             updatedAt: payload.updatedAt,
          };
@@ -111,6 +117,12 @@ router.post('/update/:postId', async (req, res) => {
    payload.coverImagePath = req.body.coverImagePath;
    payload.updatedAt = new Date();
    payload.body = new Binary(Buffer.from(req.body.body));
+   payload.coverImage = {
+      id: req.body.coverImageId,
+      path: req.body.coverImagePath,
+      refName: req.body.coverImageRefName,
+      refUrl: req.body.coverImageRefUrl,
+   };
 
    if (req.body.public === '1') {
       payload.public = true;
@@ -133,14 +145,12 @@ router.post('/update/:postId', async (req, res) => {
                description: _doc.desc,
                tags: _doc.tags,
                topic: _topic.name,
-               image: getPostCoverImageURL(_doc.coverImagePath),
+               image: getPostCoverImageURL(_doc.coverImage.path),
                createdAt: _doc.createdAt,
                updatedAt: _doc.updatedAt,
             };
-      
             await postIndex.saveObject(searchRecord).wait();
          }
-
       } else {
          await postIndex.deleteObject(postId).wait();
       }
