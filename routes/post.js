@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { ObjectId, Binary } from 'mongodb';
 import { postCollection } from '../services/db.js';
 import multer from '../utils/multer.js';
-import { ADMIN_ID } from '../config.js';
+import { ENV, ADMIN_ID } from '../config.js';
 import { getPostCoverImageURL, SHA1, templateData, getTopicArray } from '../utils/common.js';
 import { uploadFile } from '../utils/cloudinary.js';
 import { postIndex } from '../utils/algolia.js';
@@ -40,8 +40,8 @@ router.post('/new', async (req, res) => {
    payload.coverImage = {
       id: req.body.coverImageId,
       path: req.body.coverImagePath,
-      refName: req.body.coverImageRefName,
-      refUrl: req.body.coverImageRefUrl,
+      refName: req.body.coverImageRefName || '',
+      refUrl: req.body.coverImageRefUrl || '',
    };
 
    if (req.body.public === '1') {
@@ -53,7 +53,7 @@ router.post('/new', async (req, res) => {
    try {
       const result = await postCollection().insertOne(payload);
 
-      if (payload.public) {
+      if (ENV === 'prod' && payload.public) {
          const _topic = topics[payload.topic];
 
          const searchRecord = {
@@ -133,26 +133,28 @@ router.post('/update/:postId', async (req, res) => {
    try {
       await postCollection().updateOne({ _id }, { $set: payload });
 
-      if (payload.public) {
-         const _doc = await postCollection().findOne({ _id }, { projection: { body: false } });
-         
-         if (_doc) {
-            const _topic = topics[_doc.topic];
-            const searchRecord = {
-               objectID: postId,
-               name: _doc.title,
-               url: `https://fivemin.in/${_doc.slug}`,
-               description: _doc.desc,
-               tags: _doc.tags,
-               topic: _topic.name,
-               image: getPostCoverImageURL(_doc.coverImage.path),
-               createdAt: _doc.createdAt,
-               updatedAt: _doc.updatedAt,
-            };
-            await postIndex.saveObject(searchRecord).wait();
+      if (ENV === 'prod') {
+         if (payload.public) {
+            const _doc = await postCollection().findOne({ _id }, { projection: { body: false } });
+   
+            if (_doc) {
+               const _topic = topics[_doc.topic];
+               const searchRecord = {
+                  objectID: postId,
+                  name: _doc.title,
+                  url: `https://fivemin.in/${_doc.slug}`,
+                  description: _doc.desc,
+                  tags: _doc.tags,
+                  topic: _topic.name,
+                  image: getPostCoverImageURL(_doc.coverImage.path),
+                  createdAt: _doc.createdAt,
+                  updatedAt: _doc.updatedAt,
+               };
+               await postIndex.saveObject(searchRecord).wait();
+            }
+         } else {
+            await postIndex.deleteObject(postId).wait();
          }
-      } else {
-         await postIndex.deleteObject(postId).wait();
       }
 
       errorFlag = false;

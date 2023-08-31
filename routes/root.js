@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
+import { ENV } from '../config.js';
 import { postCollection } from '../services/db.js';
 import { truncateText, getPostCoverImageURL, formatTime, templateData } from '../utils/common.js';
 import postRoutes from './post.js';
@@ -26,30 +27,36 @@ router.get('/', async (req, res) => {
          { _id: ObjectId.createFromHexString(deletePostId) }, 
          {$set: { deleted: true }
       });
-      await postIndex.deleteObject(deletePostId).wait();
+
+      if (ENV === 'prod') {
+         await postIndex.deleteObject(deletePostId).wait();
+      }
    }
 
    if (restorePostId.length > 0) {
       const _id = ObjectId.createFromHexString(restorePostId);
 
       await postCollection().updateOne({ _id }, {$set: { deleted: false }});
-      const _doc = await postCollection().findOne({ _id }, { projection: { body: false }});
 
-      if (_doc) {
-         const _topic = topics[_doc.topic];
-         const searchRecord = {
-            objectID: restorePostId,
-            name: _doc.title,
-            url: `https://fivemin.in/${_doc.slug}`,
-            description: _doc.desc,
-            tags: _doc.tags,
-            topic: _topic.name,
-            image: getPostCoverImageURL(_doc.coverImagePath),
-            createdAt: _doc.createdAt,
-            updatedAt: _doc.updatedAt,
-         };
+      if (ENV === 'prod') {
+         const _doc = await postCollection().findOne({ _id }, { projection: { body: false }});
    
-         await postIndex.saveObject(searchRecord).wait();
+         if (_doc) {
+            const _topic = topics[_doc.topic];
+            const searchRecord = {
+               objectID: restorePostId,
+               name: _doc.title,
+               url: `https://fivemin.in/${_doc.slug}`,
+               description: _doc.desc,
+               tags: _doc.tags,
+               topic: _topic.name,
+               image: getPostCoverImageURL(_doc.coverImagePath),
+               createdAt: _doc.createdAt,
+               updatedAt: _doc.updatedAt,
+            };
+      
+            await postIndex.saveObject(searchRecord).wait();
+         }
       }
    }
 
