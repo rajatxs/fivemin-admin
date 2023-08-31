@@ -40,8 +40,8 @@ router.post('/new', async (req, res) => {
    payload.coverImage = {
       id: req.body.coverImageId,
       path: req.body.coverImagePath,
-      refName: req.body.coverImageRefName,
-      refUrl: req.body.coverImageRefUrl,
+      refName: req.body.coverImageRefName || '',
+      refUrl: req.body.coverImageRefUrl || '',
    };
 
    if (req.body.public === '1') {
