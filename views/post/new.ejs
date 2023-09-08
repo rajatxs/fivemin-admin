@@ -218,6 +218,42 @@
                     </div>
                   </div>
                </div>
+
+               <div class="card mt-3">
+                  <div class="card-header" id="otherSectionHeading">
+                      <button 
+                        class="btn btn-link btn-block text-left text-decoration-none text-muted" 
+                        type="button" 
+                        data-toggle="collapse" 
+                        data-target="#postOtherHeading" 
+                        aria-expanded="true" 
+                        aria-controls="postOtherHeading">
+                        <h4>Other</h4>
+                      </button>
+                  </div>
+
+                  <div 
+                     id="postOtherHeading" 
+                     class="collapse show" 
+                     aria-labelledby="otherSectionHeading" 
+                     data-parent="#postUpdateAccordion">
+                     <div class="card-body">
+                        <div class="form-row">
+                           <div class="form-group col-md-12">
+                              <label for="coverImageRefNameInput">Related Posts</label>
+                              <textarea 
+                                 class="form-control" 
+                                 name="relatedPostIds" 
+                                 id="relatedInput" 
+                                 placeholder=""
+                                 rows="2"
+                                 onchange="parseCommaSeparatedValues(event);"></textarea>
+                           </div>
+                        </div>
+                    </div>
+                  </div>
+               </div>
+
             </div>
 
             <br />

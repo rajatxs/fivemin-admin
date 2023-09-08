@@ -29,8 +29,6 @@ router.post('/new', async (req, res) => {
    payload.slug = req.body.slug;
    payload.topic = req.body.topic;
    payload.tags = req.body.tags.split(',');
-   payload.coverImageId = req.body.coverImageId;
-   payload.coverImagePath = req.body.coverImagePath;
    payload.createdAt = new Date();
    payload.updatedAt = new Date();
    payload.stars = 0;
@@ -43,6 +41,11 @@ router.post('/new', async (req, res) => {
       refName: req.body.coverImageRefName || '',
       refUrl: req.body.coverImageRefUrl || '',
    };
+
+   payload.related = req.body.relatedPostIds
+      .split(',')
+      .filter(_rawId => _rawId.length > 0)
+      .map(_rawId => ObjectId.createFromHexString(_rawId));
 
    if (req.body.public === '1') {
       payload.public = true;
@@ -113,8 +116,6 @@ router.post('/update/:postId', async (req, res) => {
    payload.slug = req.body.slug;
    payload.topic = req.body.topic;
    payload.tags = req.body.tags.split(',');
-   payload.coverImageId = req.body.coverImageId;
-   payload.coverImagePath = req.body.coverImagePath;
    payload.updatedAt = new Date();
    payload.body = new Binary(Buffer.from(req.body.body));
    payload.coverImage = {
@@ -123,6 +124,11 @@ router.post('/update/:postId', async (req, res) => {
       refName: req.body.coverImageRefName,
       refUrl: req.body.coverImageRefUrl,
    };
+
+   payload.related = req.body.relatedPostIds
+      .split(',')
+      .filter(_rawId => _rawId.length > 0)
+      .map(_rawId => ObjectId.createFromHexString(_rawId));
 
    if (req.body.public === '1') {
       payload.public = true;

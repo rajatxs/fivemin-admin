@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
                description: _doc.desc,
                tags: _doc.tags,
                topic: _topic.name,
-               image: getPostCoverImageURL(_doc.coverImagePath),
+               image: getPostCoverImageURL(_doc.coverImage.path),
                createdAt: _doc.createdAt,
                updatedAt: _doc.updatedAt,
             };
@@ -83,7 +83,7 @@ router.get('/', async (req, res) => {
       .toArray();
 
    posts = posts.map((_post) => {
-      _post.coverImageUrl = getPostCoverImageURL(_post.coverImagePath);
+      _post.coverImageUrl = getPostCoverImageURL(_post.coverImage.path);
 
       if (topics[_post.topic]) {
          _post.topicName = topics[_post.topic].name;

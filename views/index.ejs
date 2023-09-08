@@ -137,6 +137,9 @@
                               class="btn btn-primary mr-1">
                               <i class="bi bi-pen"></i>&nbsp;<span>Edit</span>
                            </a>
+                           <button class="btn btn-light" type="button" onclick="copyTextToClipboard('<%= _post._id %>');">
+                              <i class="bi bi-clipboard"></i>&nbsp;<span>Copy ID</span>
+                           </button>
                            <button
                               class="btn btn-light"
                               onclick="deletePost('<%= _post._id %>');">

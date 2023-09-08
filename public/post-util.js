@@ -74,6 +74,19 @@ function parseInputTags(event) {
    event.srcElement.value = tags.join(',');
 }
 
+function parseCommaSeparatedValues(event) {
+   let text = event.srcElement.value;
+   let values = text.split(',');
+
+   values = values
+      .filter(_val => _val.length > 0)
+      .map(_val => {
+         return _val.trim();
+      });
+
+   event.srcElement.value = values.join(',');
+}
+
 function handleFormSubmission(event) {
    const form = event.target;
 
@@ -87,4 +100,13 @@ function handleFormSubmission(event) {
 
    form.body.value = bodyContent;
    return true;
+}
+
+async function copyTextToClipboard(text = '') {
+   try {
+      await navigator.clipboard.writeText(text);
+      alert("Text copied");
+   } catch (error) {
+      alert("Failed to copy text");
+   }
 }
