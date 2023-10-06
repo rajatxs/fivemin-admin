@@ -1,3 +1,7 @@
+> :warning: **Warning**
+>
+> The Fivemin Admin has been replaced by the [Fivemin Console](https://github.com/rajatxs/go-fconsole).
+
 # Fivemin Admin
 
 This project provides interface to manage content on Fivemin platform.
