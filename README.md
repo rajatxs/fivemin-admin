@@ -4,7 +4,7 @@
 
 # Fivemin Admin
 
-This project provides interface to manage content on Fivemin platform.
+This project provides interface to manage content on [Fivemin](https://www.fivemin.in) platform.
 
 ## Requirements
 
@@ -34,7 +34,7 @@ npm install
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
-| ```FM_ADMIN_ENV``` | Server environment | No | development |
+| ```FM_ADMIN_ENV``` | Server environment | No | `development` |
 | ```FM_ADMIN_PORT``` | Server Port | Yes | - |
 | ```FM_ADMIN_ID``` | Admin account Id | Yes | - |
 | ```FM_ADMIN_DB_URL``` | [MongoDB Connection URL](https://www.mongodb.com) | Yes | - |
